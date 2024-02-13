@@ -23,16 +23,20 @@ class GPSD:
         }
 
     def update_gps(self):
-        if self.running:
-            packet = gpsd.get_current()
-            if packet.mode >= 2:
-                self.coords = {
-                    "Latitude": packet.lat,
-                    "Longitude": packet.lon,
-                    "Altitude": packet.alt if packet.mode > 2 else None,
-                    "Date": packet.time,
-                }
-        return self.coords
+        try:
+            if self.running:
+                packet = gpsd.get_current()
+                if packet.mode >= 2:
+                    self.coords = {
+                        "Latitude": packet.lat,
+                        "Longitude": packet.lon,
+                        "Altitude": packet.alt if packet.mode > 2 else None,
+                        "Date": packet.time,
+                    }
+            return self.coords
+        except Exception as e:
+            logging.error(f"[GPSD] Error updating GPS: {e}")
+            return None
 
 
 class gpsd_coord(plugins.Plugin):
@@ -51,7 +55,7 @@ class gpsd_coord(plugins.Plugin):
             self.gpsd = GPSD(self.options["gpsdhost"], self.options["gpsdport"])
             logging.info("[GPSD] plugin loaded")
         except Exception as e:
-            logging.error(f"[GPSD] Error: {e}")
+            logging.error(f"[GPSD] Error on loaded: {e}")
 
     def on_ready(self, agent):
         try:
@@ -73,7 +77,7 @@ class gpsd_coord(plugins.Plugin):
             else:
                 logging.warning("no GPS detected")
         except Exception as e:
-            logging.error(f"[GPSD] Error: {e}")
+            logging.error(f"[GPSD] Error on ready: {e}")
 
     def on_handshake(self, agent, filename, access_point, client_station):
         try:
@@ -92,7 +96,7 @@ class gpsd_coord(plugins.Plugin):
             else:
                 logging.info("[GPSD] not saving GPS: no fix")
         except Exception as e:
-            logging.error(f"[GPSD] Error: {e}")
+            logging.error(f"[GPSD] Error on handshake: {e}")
 
     def on_ui_setup(self, ui):
         try:
@@ -172,7 +176,7 @@ class gpsd_coord(plugins.Plugin):
             )
 
         except Exception as e:
-            logging.error(f"[GPSD] Error: {e}")
+            logging.error(f"[GPSD] Error setting display: {e}")
 
     def on_unload(self, ui):
         try:
@@ -181,7 +185,7 @@ class gpsd_coord(plugins.Plugin):
                 ui.remove_element("longitude")
                 ui.remove_element("altitude")
         except Exception as e:
-            logging.error(f"[GPSD] Error: {e}")
+            logging.error(f"[GPSD] Error on load: {e}")
 
     def on_ui_update(self, ui):
         try:
@@ -199,4 +203,4 @@ class gpsd_coord(plugins.Plugin):
                 ui.set("longitude", f" {coords['Longitude']:.4f} ")
                 ui.set("altitude", f" {coords['Altitude']:.1f}m ")
         except Exception as e:
-            logging.error(f"[GPSD] Error: {e}")
+            logging.error(f"[GPSD] Error updating ui: {e}")
