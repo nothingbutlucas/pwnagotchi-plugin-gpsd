@@ -118,7 +118,7 @@ class gpsd_coord(plugins.Plugin):
                 lat_pos = (127, 75)
                 lon_pos = (122, 84)
                 alt_pos = (127, 94)
-            elif ui.is_waveshare27inch():
+            elif ui.is_waveshare2in7():
                 lat_pos = (6, 120)
                 lon_pos = (1, 135)
                 alt_pos = (6, 150)
