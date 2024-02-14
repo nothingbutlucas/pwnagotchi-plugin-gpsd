@@ -1,3 +1,16 @@
+## Tips
+
+A few tips of my own for bluetooth connection:
+
+* Follow this instructions, they are very well exaplained and easy to follow.
+* Install this https://github.com/MaxKellermann/BlueNMEA from https://max.kellermann.name/download/blue-nmea/. It's an old app, but works.
+* If you phone is connected, and every seams right, but not working:
+	1. See the logs
+	2. Restart the gpsd daemon (`sudo systemctl restart gpsd`)
+
+
+---
+
 # pwnagotchi-plugin-gpsd
 a plugin for [pwnagotchi](pwnagotchi.ai) that shows your GPS location from [GPSD](https://gpsd.gitlab.io/gpsd/index.html)
 
